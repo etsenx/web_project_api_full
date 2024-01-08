@@ -1,0 +1,7 @@
+.element__delete-button {
+  border: 0;
+  padding: 0;
+  position: absolute;
+  top: 5%;
+  right: 5%;
+}

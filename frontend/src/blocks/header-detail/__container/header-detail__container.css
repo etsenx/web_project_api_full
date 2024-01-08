@@ -1,0 +1,5 @@
+.header-detail__container {
+  display: flex;
+  gap: 35px;
+  align-items: center;
+}

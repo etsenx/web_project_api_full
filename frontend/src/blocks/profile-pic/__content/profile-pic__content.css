@@ -1,0 +1,6 @@
+.profile-pic__content {
+  position: absolute;
+  top: 50px;
+  left: 45px;
+  display: none;
+}

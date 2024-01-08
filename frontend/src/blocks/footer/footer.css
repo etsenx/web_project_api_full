@@ -1,0 +1,14 @@
+.footer {
+  width: 880px;
+  margin: 68px auto 0px;
+  padding-bottom: 60px;
+  text-align: center;
+}
+
+@media screen and (min-width: 320px) and (max-width: 879px) {
+  .footer {
+    width: 320px;
+    margin-top: 50px;
+    padding-bottom: 36px;
+  }
+}

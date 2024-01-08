@@ -1,0 +1,6 @@
+.element__like-img {
+  width: 17px;
+  height: 15px;
+  margin-right: 10px;
+}
+
