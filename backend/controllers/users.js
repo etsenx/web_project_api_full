@@ -49,6 +49,13 @@ module.exports.getUser = (req, res) => {
     });
 };
 
+// Get current logged in User
+module.exports.getCurrentUser = (req, res) => {
+  const { _id } = req.user;
+  User.findById(_id)
+  .then((user) => res.send({ data: user }))
+}
+
 // Update Profile Detail
 module.exports.updateUser = (req, res) => {
   const { name, about } = req.body;
