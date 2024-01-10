@@ -2,17 +2,14 @@ const jwt = require('jsonwebtoken');
 
 // handle Authentication Error function
 const handleAuthError = (res) => {
-  res
-    .status(401)
-    .send({ message: 'Kesalahan Otorisasi' });
+  res.status(403).send({ message: 'Kesalahan Otorisasi' });
 };
 
 // extract bearer from token function
-const extractBearerToken = (header) => {
-  return header.replace('Bearer ', '');
-};
+const extractBearerToken = (header) => header.replace('Bearer ', '');
 
 // create authentication module
+// eslint-disable-next-line consistent-return
 module.exports = (req, res, next) => {
   // Get authentication value (token) from request headers;
   const { authorization } = req.headers;
@@ -34,7 +31,7 @@ module.exports = (req, res, next) => {
   }
 
   // set payload to request object
-  req.user = payload; 
+  req.user = payload;
 
-  next(); 
+  next();
 };

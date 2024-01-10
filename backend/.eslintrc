@@ -3,6 +3,9 @@
   "rules": {
     "no-console": "off",
     "no-underscore-dangle": "off",
+    "object-curly-newline": "off",
+    "implicit-arrow-linebreak": "off",
+    "function-paren-newline": "off",
     "space-unary-ops": [
         2, {
           "words": true,

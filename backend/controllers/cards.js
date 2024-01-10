@@ -30,12 +30,13 @@ module.exports.createCard = (req, res) => {
 module.exports.deleteCard = (req, res) => {
   const { cardId } = req.params;
 
-  Card.deleteOne({ _id: cardId })
+  Card.deleteOne({ _id: cardId, owner: req.user._id })
     .orFail()
     .then((card) => res.send({ data: card }))
     .catch((err) => {
-      if (err.name === 'CastError') {
-        res.status(404).send({ message: 'Card Not Found' });
+      console.log(err.name);
+      if (err.name === 'CastError' || err.name === 'DocumentNotFoundError') {
+        res.status(404).send({ message: 'Card Is Not Yours or Not Found' });
       } else {
         res.status(500).send({ message: err.message });
       }

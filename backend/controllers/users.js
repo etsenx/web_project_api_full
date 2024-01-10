@@ -1,6 +1,6 @@
-const User = require("../models/user");
-const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
+const User = require('../models/user');
 
 // Get All Users
 module.exports.getUsers = (req, res) => {
@@ -12,22 +12,32 @@ module.exports.getUsers = (req, res) => {
 // Register New User
 module.exports.createUser = (req, res) => {
   const { name, email, password, about, avatar } = req.body;
+
   bcrypt
     .hash(password, 10)
-    .then((hashedPass) => {
-      return User.create({
+    .then((hashedPass) =>
+      User.create({
         name,
         email,
         password: hashedPass,
         about,
         avatar,
-      });
-    })
-    .then((user) => res.send({ data: user }))
+      }),
+    )
+    .then((user) =>
+      res.send({
+        data: {
+          name: user.name,
+          email: user.email,
+          about: user.about,
+          avatar: user.avatar,
+          _id: user.id,
+        },
+      }),
+    )
     .catch((err) => {
-      if (err.name === "ValidationError") {
+      if (err.name === 'ValidationError') {
         res.status(400).send({ message: err.message });
-        // res.status(400).send({ message: "Invalid Data" });
       } else {
         res.status(500).send({ message: err.message });
       }
@@ -41,8 +51,8 @@ module.exports.getUser = (req, res) => {
     .orFail()
     .then((user) => res.send({ data: user }))
     .catch((err) => {
-      if (err.name === "CastError") {
-        res.status(404).send({ message: "User Not Found" });
+      if (err.name === 'CastError') {
+        res.status(404).send({ message: 'User Not Found' });
       } else {
         res.status(500).send({ message: err.message });
       }
@@ -53,8 +63,12 @@ module.exports.getUser = (req, res) => {
 module.exports.getCurrentUser = (req, res) => {
   const { _id } = req.user;
   User.findById(_id)
-  .then((user) => res.send({ data: user }))
-}
+    .orFail()
+    .then((user) => res.send({ data: user }))
+    .catch((err) => {
+      res.status(500).send({ message: err.message });
+    });
+};
 
 // Update Profile Detail
 module.exports.updateUser = (req, res) => {
@@ -62,13 +76,13 @@ module.exports.updateUser = (req, res) => {
   User.findByIdAndUpdate(
     req.user._id,
     { name, about },
-    { runValidators: true, new: true }
+    { runValidators: true, new: true },
   )
     .orFail()
     .then((user) => res.send({ data: user }))
     .catch((err) => {
-      if (err.name === "ValidationError") {
-        res.status(400).send({ message: "Invalid Data" });
+      if (err.name === 'ValidationError') {
+        res.status(400).send({ message: 'Invalid Data' });
       } else {
         res.status(500).send({ message: err.message });
       }
@@ -82,8 +96,8 @@ module.exports.updateAvatar = (req, res) => {
     .orFail()
     .then((user) => res.send({ data: user }))
     .catch((err) => {
-      if (err.name === "ValidationError") {
-        res.status(400).send({ message: "Invalid Data" });
+      if (err.name === 'ValidationError') {
+        res.status(400).send({ message: 'Invalid Data' });
       } else {
         res.status(500).send({ message: err.message });
       }
@@ -96,11 +110,11 @@ module.exports.login = (req, res) => {
 
   return User.findUserByCredentials(email, password)
     .then((user) => {
-    res.send({
-      token: jwt.sign({ _id: user._id }, 'secretsecret', { expiresIn: '7d' }),
-    });
-  })
+      res.send({
+        token: jwt.sign({ _id: user._id }, 'secretsecret', { expiresIn: '7d' }),
+      });
+    })
     .catch((err) => {
-    res.status(401).send({ message: err.message });
-  });
+      res.status(401).send({ message: err.message });
+    });
 };

@@ -17,14 +17,14 @@ const userSchema = new mongoose.Schema({
     unique: true,
     required: true,
     validate: {
-      validator: (v) => {
-        return validator.isEmail(v)
-      }
-    }
+      validator: (v) => validator.isEmail(v),
+      message: 'Format email salah',
+    },
   },
   password: {
     type: String,
-    required: true
+    required: true,
+    select: false,
   },
   about: {
     type: String,
@@ -35,8 +35,9 @@ const userSchema = new mongoose.Schema({
   },
   avatar: {
     type: String,
-    default: 'https://practicum-content.s3.us-west-1.amazonaws.com/resources/moved_avatar_1604080799.jpg',
-    required: true, 
+    default:
+      'https://practicum-content.s3.us-west-1.amazonaws.com/resources/moved_avatar_1604080799.jpg',
+    required: true,
     validate: {
       validator(v) {
         return /(https:\/\/|http:\/\/)(www\.)?.+/g.test(v);
@@ -45,22 +46,25 @@ const userSchema = new mongoose.Schema({
   },
 });
 
-userSchema.statics.findUserByCredentials = function (email, password) {
+userSchema.statics.findUserByCredentials = function findUserByCredentials(
+  email,
+  password,
+) {
   return this.findOne({ email })
+    .select('+password')
     .then((user) => {
-    if (!user) {
-      return Promise.reject(new Error('Email atau sandi salah'));
-    }
-
-    return bcrypt.compare(password, user.password)
-      .then((matched) => {
-      if (!matched) {
+      if (!user) {
         return Promise.reject(new Error('Email atau sandi salah'));
       }
 
-      return user;
+      return bcrypt.compare(password, user.password).then((matched) => {
+        if (!matched) {
+          return Promise.reject(new Error('Email atau sandi salah'));
+        }
+
+        return user;
+      });
     });
-  });
 };
 
 module.exports = mongoose.model('user', userSchema);
