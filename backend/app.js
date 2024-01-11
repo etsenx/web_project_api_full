@@ -7,15 +7,16 @@ const usersRoutes = require('./routes/users');
 const cardsRoutes = require('./routes/cards');
 const { createUser, login } = require('./controllers/users');
 const auth = require('./middleware/auth');
+const { requestLogger, errorLogger } = require('./middleware/logger');
 
 mongoose.connect('mongodb://127.0.0.1:27017/aroundb');
 const app = express();
 
 const corsOption = {
-  "origin": "http://localhost:3000",
-  "methods": "GET,HEAD,PUT,PATCH,POST,DELETE",
-  "allowedHeaders": ["Content-Type", "Authorization"],
-}
+  origin: ['http://localhost:3000', 'https://etsenx.t-hp.com'],
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  allowedHeaders: ['Content-Type', 'Authorization'],
+};
 
 app.use(cors(corsOption));
 
@@ -24,17 +25,21 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 const BASE_URL = process.env.BASE_PATH || 3001;
 
+app.use(requestLogger);
 
-
-app.post('/signin', celebrate({
-  body: Joi.object().keys({
-    email: Joi.string().email().required(),
-    password: Joi.string().min(8).required(),
-  })
-}), login);
+app.post(
+  '/signin',
+  celebrate({
+    body: Joi.object().keys({
+      email: Joi.string().email().required(),
+      password: Joi.string().min(8).required(),
+    }),
+  }),
+  login,
+);
 app.post(
   '/signup',
-celebrate({
+  celebrate({
     body: Joi.object().keys({
       name: Joi.string().min(2).max(30),
       email: Joi.string().email().required(),
@@ -53,18 +58,16 @@ app.get('*', (req, res) => {
   res.send({ message: 'Sumber daya yang diminta tidak ada' });
 });
 
+app.use(errorLogger);
+
 app.use(errors());
 
 app.use((err, req, res, next) => {
   const { statusCode, message } = err;
-  res
-    .status(statusCode)
-    .send({
-      message: statusCode === 500
-        ? 'Terjadi kesalahan pada server'
-        : message
-    });
-}); 
+  res.status(statusCode).send({
+    message: statusCode === 500 ? 'Terjadi kesalahan pada server' : message,
+  });
+});
 
 app.listen(BASE_URL, () => {
   console.log('Listening on port 3001');

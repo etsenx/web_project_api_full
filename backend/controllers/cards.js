@@ -41,8 +41,8 @@ module.exports.likeCard = (req, res, next) => {
   )
     .orFail()
     .then((card) => {
-      res.send(card)}
-    )
+      res.send(card);
+    })
     .catch(next);
 };
 
