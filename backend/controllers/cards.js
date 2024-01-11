@@ -1,14 +1,14 @@
 const Card = require('../models/card');
 
 // Return all Cards
-module.exports.getCards = (req, res) => {
+module.exports.getCards = (req, res, next) => {
   Card.find({})
-    .then((cards) => res.send({ data: cards }))
-    .catch((err) => res.status(500).send({ message: err.message }));
+    .then((cards) => res.send(cards))
+    .catch(next);
 };
 
 // Create New Card
-module.exports.createCard = (req, res) => {
+module.exports.createCard = (req, res, next) => {
   const { name, link } = req.body;
 
   Card.create({
@@ -16,55 +16,38 @@ module.exports.createCard = (req, res) => {
     link,
     owner: req.user._id,
   })
-    .then((card) => res.send({ data: card }))
-    .catch((err) => {
-      if (err.name === 'ValidationError') {
-        res.status(400).send({ message: 'Invalid Data' });
-      } else {
-        res.status(500).send({ message: err.name });
-      }
-    });
+    .then((card) => res.send(card))
+    .catch(next);
 };
 
 // Delete existing card
-module.exports.deleteCard = (req, res) => {
+module.exports.deleteCard = (req, res, next) => {
   const { cardId } = req.params;
 
   Card.deleteOne({ _id: cardId, owner: req.user._id })
     .orFail()
     .then((card) => res.send({ data: card }))
-    .catch((err) => {
-      console.log(err.name);
-      if (err.name === 'CastError' || err.name === 'DocumentNotFoundError') {
-        res.status(404).send({ message: 'Card Is Not Yours or Not Found' });
-      } else {
-        res.status(500).send({ message: err.message });
-      }
-    });
+    .catch(next);
 };
 
 // Like card
-module.exports.likeCard = (req, res) => {
+module.exports.likeCard = (req, res, next) => {
   const { cardId } = req.params;
-
+  // console.log(cardId);
   Card.findByIdAndUpdate(
     cardId,
     { $addToSet: { likes: req.user._id } },
     { new: true },
   )
     .orFail()
-    .then((card) => res.send({ data: card }))
-    .catch((err) => {
-      if (err.name === 'ValidationError') {
-        res.status(400).send({ message: 'Invalid Data' });
-      } else {
-        res.status(500).send({ message: err.message });
-      }
-    });
+    .then((card) => {
+      res.send(card)}
+    )
+    .catch(next);
 };
 
 // Unlike card
-module.exports.unlikeCard = (req, res) => {
+module.exports.unlikeCard = (req, res, next) => {
   const { cardId } = req.params;
 
   Card.findByIdAndUpdate(
@@ -73,12 +56,6 @@ module.exports.unlikeCard = (req, res) => {
     { new: true },
   )
     .orFail()
-    .then((card) => res.send({ data: card }))
-    .catch((err) => {
-      if (err.name === 'ValidationError') {
-        res.status(400).send({ message: 'Invalid Data' });
-      } else {
-        res.status(500).send({ message: err.message });
-      }
-    });
+    .then((card) => res.send(card))
+    .catch(next);
 };

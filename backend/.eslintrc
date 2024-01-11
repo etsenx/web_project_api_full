@@ -6,6 +6,7 @@
     "object-curly-newline": "off",
     "implicit-arrow-linebreak": "off",
     "function-paren-newline": "off",
+    "no-unused-vars": ["error", { "argsIgnorePattern": "next" }],
     "space-unary-ops": [
         2, {
           "words": true,

@@ -27,21 +27,20 @@ function App() {
   const [selectedCard, setSelectedCard] = useState();
   const [cards, setCards] = useState([]);
   const [loggedIn, setLoggedIn] = useState(false);
-  const [userData, setUserData] = useState({});
+  // const [userData, setUserData] = useState({});
 
   useEffect(() => {
-    
-
     function checkToken() {
       if (localStorage.getItem("token")) {
         const token = localStorage.getItem("token");
-        auth.getUserData(token).then((res) => {
-          if (res) {
-            setUserData(res.data);
+        auth.getUserData(token).then((data) => {
+          if (data) {
+            // setUserData(res.data);
             setLoggedIn(true);
-            api.getUserInformation().then((data) => {
-              setCurrentUser(data);
-            });
+            setCurrentUser(data);
+            // api.getUserInformation().then((data) => {
+            //   setCurrentUser(data);
+            // });
         
             api.getCards().then((cards) => {
               setCards(cards);
@@ -56,7 +55,7 @@ function App() {
   }, [navigate]);
 
   function handleCardLike(card) {
-    const isLiked = card.likes.some((i) => i._id === currentUser._id);
+    const isLiked = card.likes.some((i) => i === currentUser._id);
 
     api.changeLikeCardStatus(card._id, isLiked).then((newCard) => {
       setCards((prevState) =>
@@ -116,10 +115,10 @@ function App() {
           setSuccess(false);
           setIsInfoToolTipOpen(true);
         } else if (res.token) {
-          auth.getUserData(res.token).then((res) => {
-            if (res) {
+          auth.getUserData(res.token).then((data) => {
+            if (data) {
               setLoggedIn(true);
-              setUserData(res.data);
+              setCurrentUser(data);
               navigate("/");
             }
           });
@@ -167,12 +166,12 @@ function App() {
   return (
     <div className="App">
       <div className="page">
+        <CurrentUserContext.Provider value={currentUser}>
         <Header
           loggedIn={loggedIn}
           handleLogout={handleLogout}
-          userData={userData}
+          // userData={userData}
         />
-        <CurrentUserContext.Provider value={currentUser}>
           <Routes>
             <Route path="/signin" element={<Login onSubmit={handleLogin} />} />
             <Route

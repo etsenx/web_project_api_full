@@ -4,7 +4,7 @@ class Auth {
   }
 
   register(email, password) {
-    return fetch(`https://register.nomoreparties.co/signup`, {
+    return fetch(`${this.baseUrl}/signup`, {
       method: "POST",
       headers: {
         "Accept": "application/json",
@@ -23,7 +23,7 @@ class Auth {
       })
       .catch((err) => {
         if (err.status === 400) {
-          console.log("Salah satu column tidak benar");
+          Promise.reject("Salah satu column tidak benar")
         }
       });
   }
@@ -62,23 +62,28 @@ class Auth {
       },
     })
       .then((res) => {
-        return res.json();
+        if (res.status === 200) {
+          return res.json();
+        }
+        return Promise.reject(`Error: ${res.status}`);
       })
       .then((data) => {
-        return data;
+        return Promise.resolve(data);
       })
       .catch((err) => {
         if (err.status === 400) {
-          console.log("token tidak diberikan atau format salah")
+          return Promise.reject("Token tidak diberikan atau format salah");
         } else if (err.status === 401) {
-          console.log("token tidak valid")
+          return Promise.reject("Token tidak valid");
+        } else {
+          return Promise.reject(err);
         }
       });
   }
 }
 
 export const auth = new Auth({
-  baseUrl: "https://register.nomoreparties.co",
+  baseUrl: "http://localhost:3001",
 });
 
 export default Auth;

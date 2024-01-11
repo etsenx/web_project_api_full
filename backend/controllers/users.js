@@ -3,14 +3,14 @@ const bcrypt = require('bcrypt');
 const User = require('../models/user');
 
 // Get All Users
-module.exports.getUsers = (req, res) => {
+module.exports.getUsers = (req, res, next) => {
   User.find({})
     .then((users) => res.send({ data: users }))
-    .catch((err) => res.status(500).send({ message: err.message }));
+    .catch(next);
 };
 
 // Register New User
-module.exports.createUser = (req, res) => {
+module.exports.createUser = (req, res, next) => {
   const { name, email, password, about, avatar } = req.body;
 
   bcrypt
@@ -35,43 +35,29 @@ module.exports.createUser = (req, res) => {
         },
       }),
     )
-    .catch((err) => {
-      if (err.name === 'ValidationError') {
-        res.status(400).send({ message: err.message });
-      } else {
-        res.status(500).send({ message: err.message });
-      }
-    });
+    .catch(next);
 };
 
 // Get User by ID
-module.exports.getUser = (req, res) => {
+module.exports.getUser = (req, res, next) => {
   const { userId } = req.params;
   User.findById(userId)
     .orFail()
     .then((user) => res.send({ data: user }))
-    .catch((err) => {
-      if (err.name === 'CastError') {
-        res.status(404).send({ message: 'User Not Found' });
-      } else {
-        res.status(500).send({ message: err.message });
-      }
-    });
+    .catch(next);
 };
 
 // Get current logged in User
-module.exports.getCurrentUser = (req, res) => {
+module.exports.getCurrentUser = (req, res, next) => {
   const { _id } = req.user;
   User.findById(_id)
     .orFail()
-    .then((user) => res.send({ data: user }))
-    .catch((err) => {
-      res.status(500).send({ message: err.message });
-    });
+    .then((user) => res.send(user))
+    .catch(next);
 };
 
 // Update Profile Detail
-module.exports.updateUser = (req, res) => {
+module.exports.updateUser = (req, res, next) => {
   const { name, about } = req.body;
   User.findByIdAndUpdate(
     req.user._id,
@@ -79,42 +65,31 @@ module.exports.updateUser = (req, res) => {
     { runValidators: true, new: true },
   )
     .orFail()
-    .then((user) => res.send({ data: user }))
-    .catch((err) => {
-      if (err.name === 'ValidationError') {
-        res.status(400).send({ message: 'Invalid Data' });
-      } else {
-        res.status(500).send({ message: err.message });
-      }
-    });
+    .then((user) => {
+      console.log(user);
+      return res.send(user);
+    })
+    .catch(next);
 };
 
 // Update Profile Avatar
-module.exports.updateAvatar = (req, res) => {
+module.exports.updateAvatar = (req, res, next) => {
   const { avatar } = req.body;
   User.findByIdAndUpdate(req.user._id, { avatar }, { runValidators: true })
     .orFail()
-    .then((user) => res.send({ data: user }))
-    .catch((err) => {
-      if (err.name === 'ValidationError') {
-        res.status(400).send({ message: 'Invalid Data' });
-      } else {
-        res.status(500).send({ message: err.message });
-      }
-    });
+    .then((user) => res.send(user))
+    .catch(next);
 };
 
 // Login
-module.exports.login = (req, res) => {
+module.exports.login = (req, res, next) => {
   const { email, password } = req.body;
-
+  console.log('called');
   return User.findUserByCredentials(email, password)
     .then((user) => {
       res.send({
         token: jwt.sign({ _id: user._id }, 'secretsecret', { expiresIn: '7d' }),
       });
     })
-    .catch((err) => {
-      res.status(401).send({ message: err.message });
-    });
+    .catch(next);
 };

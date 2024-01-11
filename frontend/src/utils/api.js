@@ -5,27 +5,28 @@ class Api {
   }
 
   // Get User Info
-  getUserInformation() {
-    const userInfo = fetch(`${this.baseUrl}/users/me`, {
-      headers: this.headers,
-    })
-      .then((res) => {
-        if (res.status === 200) {
-          return res.json();
-        }
-        return Promise.reject(`Error: ${res.status}`);
-      })
-      .then((data) => {
-        return Promise.resolve(data);
-      })
-      .catch((err) => {
-        return Promise.reject(err);
-      });
-    return userInfo;
-  }
+  // getUserInformation() {
+  //   const userInfo = fetch(`${this.baseUrl}/users/me`, {
+  //     headers: this.headers,
+  //   })
+  //     .then((res) => {
+  //       if (res.status === 200) {
+  //         return res.json();
+  //       }
+  //       return Promise.reject(`Error: ${res.status}`);
+  //     })
+  //     .then((data) => {
+  //       return Promise.resolve(data);
+  //     })
+  //     .catch((err) => {
+  //       return Promise.reject(err);
+  //     });
+  //   return userInfo;
+  // }
 
   // Get All Cards
   getCards() {
+    this.headers.Authorization = `Bearer ${localStorage.getItem('token')}`;
     const cards = fetch(`${this.baseUrl}/cards`, {
       headers: this.headers,
     })
@@ -64,9 +65,9 @@ class Api {
         .catch((err) => {
           return reject(err);
         })
-      .finally(() => {
-        saveButton.current.textContent = "Simpan";
-      })
+        .finally(() => {
+          saveButton.current.textContent = "Simpan";
+        });
     });
   }
 
@@ -93,7 +94,7 @@ class Api {
       });
   }
 
-  addCard(saveButton ,newCardData) {
+  addCard(saveButton, newCardData) {
     const newCard = fetch(`${this.baseUrl}/cards`, {
       method: "POST",
       headers: this.headers,
@@ -142,7 +143,7 @@ class Api {
   }
 
   likeCard(cardId) {
-    return fetch(`${this.baseUrl}/cards/likes/${cardId}`, {
+    return fetch(`${this.baseUrl}/cards/${cardId}/likes`, {
       method: "PUT",
       headers: this.headers,
     })
@@ -161,7 +162,8 @@ class Api {
   }
 
   unlikeCard(cardId) {
-    return fetch(`${this.baseUrl}/cards/likes/${cardId}`, {
+    this.headers.Authorization = `Bearer ${localStorage.getItem('token')}`;
+    return fetch(`${this.baseUrl}/cards/${cardId}/likes`, {
       method: "DELETE",
       headers: this.headers,
     })
@@ -181,9 +183,9 @@ class Api {
 }
 
 export const api = new Api({
-  baseUrl: "https://around.nomoreparties.co/v1/web_id_03",
+  baseUrl: "http://localhost:3001",
   headers: {
-    authorization: "8746c452-39d4-4cd4-8e82-ac5a93e07813",
+    // authorization: "8746c452-39d4-4cd4-8e82-ac5a93e07813",
     "Content-Type": "application/json",
   },
 });

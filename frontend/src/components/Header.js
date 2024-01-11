@@ -1,8 +1,11 @@
 import logo from "../images/Logo.png";
+import { useContext } from "react";
 import { useLocation } from "react-router-dom";
+import { CurrentUserContext } from "../contexts/CurrentUserContext";
 
 function Header(props) {
   const { pathname } = useLocation();
+  const currentUser = useContext(CurrentUserContext);
 
   return (
     <header className="header">
@@ -19,7 +22,7 @@ function Header(props) {
         ))}
       {props.loggedIn && (
         <div className="header-detail__container">
-          <p className="header-detail__email">{props.userData.email}</p>
+          <p className="header-detail__email">{currentUser.email}</p>
           <a
             href="/"
             className="header__link header-detail__link"
