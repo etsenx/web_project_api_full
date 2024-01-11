@@ -23,7 +23,7 @@ app.use(cors(corsOption));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-const BASE_URL = process.env.BASE_PATH || 3001;
+const BASE_URL = process.env.BASE_PATH || 3000;
 
 app.use(requestLogger);
 
@@ -70,6 +70,6 @@ app.use((err, req, res, next) => {
 });
 
 app.listen(BASE_URL, () => {
-  console.log('Listening on port 3001');
+  console.log('Listening on port 3000');
   // console.log(BASE_PATH);
 });
