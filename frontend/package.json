@@ -19,7 +19,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "predeploy": "npm run build",
-    "deploy": "npm run build && scp -r -i ~/.ssh/id_ed25519 ./build/* seceret1984@etsenx.t-hp.com:/home/seceret1984/around-frontend"
+    "deploy": "npm run build && scp -r -i ~/.ssh/id_ed25519 ./build/* seceret1984@around.trunk.so:/home/seceret1984/around-frontend"
   },
   "eslintConfig": {
     "extends": [
