@@ -8,6 +8,7 @@ const cardsRoutes = require('./routes/cards');
 const { createUser, login } = require('./controllers/users');
 const auth = require('./middleware/auth');
 const { requestLogger, errorLogger } = require('./middleware/logger');
+require('dotenv').config();
 
 mongoose.connect('mongodb://127.0.0.1:27017/aroundb');
 const app = express();
