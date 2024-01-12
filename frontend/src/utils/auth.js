@@ -83,7 +83,7 @@ class Auth {
 }
 
 export const auth = new Auth({
-  baseUrl: "http://api.around.trunk.so",
+  baseUrl: "https://api.around.trunk.so",
 });
 
 export default Auth;

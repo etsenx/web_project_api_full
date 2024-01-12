@@ -183,7 +183,7 @@ class Api {
 }
 
 export const api = new Api({
-  baseUrl: "http://api.around.trunk.so",
+  baseUrl: "https://api.around.trunk.so",
   headers: {
     // authorization: "8746c452-39d4-4cd4-8e82-ac5a93e07813",
     "Content-Type": "application/json",
