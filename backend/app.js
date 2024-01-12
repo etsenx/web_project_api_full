@@ -28,6 +28,12 @@ const BASE_URL = process.env.BASE_PATH || 3000;
 
 app.use(requestLogger);
 
+app.get('/crash-test', () => {
+  setTimeout(() => {
+    throw new Error('Server akan crash saat ini');
+  }, 0);
+}); 
+
 app.post(
   '/signin',
   celebrate({
