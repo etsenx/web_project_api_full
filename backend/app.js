@@ -14,7 +14,7 @@ mongoose.connect('mongodb://127.0.0.1:27017/aroundb');
 const app = express();
 
 const corsOption = {
-  origin: ['http://localhost:3006', 'https://etsenx.t-hp.com', 'https://around.trunk.so'],
+  origin: ['http://localhost:3006', 'https://etsenx.t-hp.com', 'https://around.trunk.so', 'https://www.around.trunk.so'],
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   allowedHeaders: ['Content-Type', 'Authorization'],
 };
